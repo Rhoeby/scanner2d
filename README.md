@@ -1,7 +1,7 @@
 Rhoeby Dynamics R2D LiDAR ROS Node
 ==================================
 
-The Rhoeby Dynamics R2D LiDAR is a small, light, low-cost scanner that uses IR (Infra-Red) ranging technology from TeraRanger (website: http://teraranger.com). This scanner is designed to replace more expensive laser-based products and avoids the eye-safety issues associated with those devices. For more information on the scanner, please see our website: http://wwww.rhoeby.com.
+The Rhoeby Dynamics R2D LiDAR is a small, light, low-cost scanner that uses IR (Infra-Red) ranging technology from TeraRanger (website: http://teraranger.com). This scanner is designed to replace more expensive laser-based products and avoids the eye-safety issues associated with those devices. For more information on the scanner, please see our website: http://www.rhoeby.com.
 
 Specifications
 --------------
@@ -43,9 +43,7 @@ Detailed instructions
 2. connect scanner via USB
 
   - plug in scanner
-  - type 'lsusb', you should see something like: "Bus 002 Device 009: ID 0483:5740 SGS Thomson 
-
-Microelectronics"
+  - type 'lsusb', you should see something like: "Bus 002 Device 009: ID 0483:5740 SGS Thomson Microelectronics"
   - confirm sensor is spinning (once per second) and blue LED is flashing
   - you could verify *binary* data flow from the scanner, type: 'cat /dev/ttyACM0' (use Ctrl-C to exit)
 
