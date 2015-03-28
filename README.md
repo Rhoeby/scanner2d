@@ -53,21 +53,21 @@ Detailed instructions
 
 4. run static tf publisher
 
-  rosrun tf static_transform_publisher 0.0 0.0 0.0 0.0 0.0 0.0 base_laser map 1000 &
+    rosrun tf static_transform_publisher 0.0 0.0 0.0 0.0 0.0 0.0 base_laser map 1000 &
 
-This allows the scan to be displayed in RViz by providing a transform from the frame of the scanner to the map.
+ This allows the scan to be displayed in RViz by providing a transform from the frame of the scanner to the map.
 
 5. run ROS node as shown here (it's using ttyS3, as an example):
 
-  rosrun scanner2d scanner2d _port_name:="/dev/ttyS3"
+    rosrun scanner2d scanner2d _port_name:="/dev/ttyS3"
 
-The default port name is "/dev/ttyACM0". If you are using a different port, you'll need to specify it on the command line.
+ The default port name is "/dev/ttyACM0". If you are using a different port, you'll need to specify it on the command line.
 
 6. Confirm scanner speeds up to 240 rpm (4 rotations / sec)
 
 7. run RViz
 
-  rosrun rviz rviz
+    rosrun rviz rviz
 
 9. observe scanner plot data in rviz
 
@@ -77,7 +77,7 @@ The default port name is "/dev/ttyACM0". If you are using a different port, you'
   - select LaserScan which appears under the topic
   - hit OK
 
-The LaserScan should now be presented in rviz. If you can see it, congratulations! If it does not work, try the Troubleshooting guide below.
+ The LaserScan should now be presented in rviz. If you can see it, congratulations! If it does not work, try the Troubleshooting guide below.
 
 Notes
 -----
