@@ -122,18 +122,18 @@ Solution:
 
 Do the following:
 
-  shutdown rviz (using Ctrl-C)
-  shutdown the scanner2d node
-  shutdown the static_transform_publisher
-  shutdown roscore
+  - shutdown rviz (using Ctrl-C)
+  - shutdown the scanner2d node
+  - shutdown the static_transform_publisher
+  - shutdown roscore
 
-  unplug scanner
-  plug scanner back in
+  - unplug scanner
+  - plug scanner back in
 
-  restart roscore
-  restart static_transform_publisher
-  restart scanner2d node
-  restart rviz
+  - restart roscore
+  - restart static_transform_publisher
+  - restart scanner2d node
+  - restart rviz
 
 Symptom: 
 
