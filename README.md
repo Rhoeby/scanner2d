@@ -120,18 +120,20 @@ RViz does not display the scan
 
 Solution:
 
-shutdown rviz (using Ctrl-C)
-shutdown the scanner2d node
-shutdown the static_transform_publisher
-shutdown roscore
+Do the following:
 
-unplug scanner
-plug scanner back in
+  shutdown rviz (using Ctrl-C)
+  shutdown the scanner2d node
+  shutdown the static_transform_publisher
+  shutdown roscore
 
-restart roscore
-restart static_transform_publisher
-restart scanner2d node
-restart rviz
+  unplug scanner
+  plug scanner back in
+
+  restart roscore
+  restart static_transform_publisher
+  restart scanner2d node
+  restart rviz
 
 Symptom: 
 
