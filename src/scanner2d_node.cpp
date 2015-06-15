@@ -35,10 +35,15 @@
 *********************************************************************/
 
 #include <string>
+#include <signal.h>
 #include "ros/ros.h"
 #include "sensor_msgs/LaserScan.h"
 
 #include "scanner2d.h"
+
+static void sig_handler(int s);
+
+static bool got_ctrl_c = false;
 
 int main(int argc, char *argv[])
 {
@@ -46,12 +51,28 @@ int main(int argc, char *argv[])
   scanner2d::Scanner2d scanner;
   std::string port_name;
   int scan_rate;
+  int sample_rejection;
+  int samples_per_scan;
+  int min_angle;
+  int max_angle;
 
   ROS_DEBUG("Welcome to scanner2d Node!");
 
+  signal(SIGINT, sig_handler);
+  
   ros::NodeHandle private_node_handle_("~");
   private_node_handle_.param("port_name", port_name, std::string("/dev/ttyACM0"));
-  private_node_handle_.param("scan_rate", scan_rate, int(4));
+  private_node_handle_.param("scan_rate", scan_rate, int(3));
+  private_node_handle_.param("samples_per_scan", samples_per_scan, int(333));
+  private_node_handle_.param("sample_rejection", sample_rejection, int(0));
+  private_node_handle_.param("min_angle", min_angle, int(0));
+  private_node_handle_.param("max_angle", max_angle, int(360));
+
+  if (scan_rate*samples_per_scan > 1000) {
+    ROS_WARN("The scan_rate * samples_per_scan exceeds the max sample rate (1000) of the sensor!");
+    ROS_WARN("  you should either alter the settings from the command line invocation,");
+    ROS_WARN("  or reconfigure the parameter server directly.");
+  }
 
   scanner.open(port_name);
 
@@ -63,6 +84,9 @@ int main(int argc, char *argv[])
   case 2:
     scanner.setScanPeriod(500);
     break;
+  case 3:
+    scanner.setScanPeriod(333);
+    break;
   case 4:
     scanner.setScanPeriod(250);
     break;
@@ -73,6 +97,10 @@ int main(int argc, char *argv[])
     ROS_WARN("Invalid scan_rate!");
   }
   
+  scanner.setSampleRejectionMode((bool)sample_rejection);
+  scanner.setSamplesPerScan(samples_per_scan);
+  scanner.setMinMaxAngle(min_angle,  max_angle);
+
   ros::Rate loop_rate(10);
 
   while (ros::ok()) 
@@ -85,10 +113,28 @@ int main(int argc, char *argv[])
       ROS_DEBUG("  Status flags: 0x%x", status.flags);
       break;
     }
+
+    if (got_ctrl_c) {
+      ROS_WARN("Got Ctrl-C");
+      scanner.stop();
+      ros::Duration(0.5).sleep();
+      scanner.close();
+      break;
+    }
+
     ros::spinOnce();
     loop_rate.sleep();
   }
 
-  return 0;
+  ROS_WARN("Exiting.");
+
+  exit(0);
+}
+
+void sig_handler(int s)
+{
+  if (s == 2) {
+    got_ctrl_c = true; 
+  }
 }
 

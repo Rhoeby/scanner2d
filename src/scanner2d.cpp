@@ -43,13 +43,14 @@
 
 #include "scanner2d.h"
 
-#define SCANNER2D_USE_CONSOLE 1
+// options
+#define SCANNER2D_USE_CONSOLE 0
 
 namespace scanner2d
 {
 
 #define SCANNER2D_CMD_LEN_MAX           32
-#define SCANNER2D_MSG_LEN_MAX           1024
+#define SCANNER2D_MSG_LEN_MAX           2048
 #define SCANNER2D_MSG_HEADER_LEN        5
 #define SCANNER2D_READ_LOOP_MAX         256 // maximum number of consecutive bytes to read from the port 
 
@@ -60,6 +61,10 @@ typedef enum Scanner2dCommands_t
   SCANNER2D_CMD_SET_SCAN_PERIOD,
   SCANNER2D_CMD_RESET,
   SCANNER2D_CMD_CLEAR_RESET,
+  SCANNER2D_CMD_SET_SAMPLES_PER_SCAN,
+  SCANNER2D_CMD_SET_SAMPLE_REJECTION,
+  SCANNER2D_CMD_SET_PARK_TRIM,
+  SCANNER2D_CMD_SET_MIN_MAX_ANGLE,
   SCANNER2D_CMD_MAX,
 } Scanner2dCommands_t;
 
@@ -89,10 +94,9 @@ Scanner2d::Scanner2d()
   memset(&status_, 0, sizeof(status_));
   status_.samples_per_scan = 200;
   status_.scan_period = 250;
+  status_.flags = 0x01;
 
   port_fd_ = -1;
-
-  thread_ = boost::thread(&Scanner2d::processThread, this);
 }
 
 /*----------------------------------------------------------
@@ -116,13 +120,24 @@ Scanner2d::~Scanner2d()
 
 void Scanner2d::open(const std::string port_name)
 {
+  uint8_t retry_count = 0;
   struct termios new_termios;
 
+retry:
   port_fd_ = ::open(port_name.c_str(), O_RDWR | O_NOCTTY | O_NDELAY);
   if (port_fd_ == -1)
   {
-    ROS_ERROR("%s open failed!", port_name.c_str());
-    exit(-1);
+    ros::Duration(1.0).sleep();
+    ROS_ERROR("%s open failed, retrying...!", port_name.c_str());
+    retry_count++;
+    if (retry_count < 20)
+    {
+      goto retry;
+    }
+    else {
+      ROS_ERROR("%s open failed too many times!", port_name.c_str());
+      exit(-1);
+    }
   }
   else
   {
@@ -134,19 +149,7 @@ void Scanner2d::open(const std::string port_name)
   cfsetospeed(&new_termios, B115200);
   tcsetattr(port_fd_, TCSANOW, &new_termios);
 
-  if (msgDataWaiting())
-  {
-    ROS_DEBUG("Clearing Rx buffer!");
-    while (msgDataWaiting())
-    {
-      ::read(port_fd_, &msg_->buffer, SCANNER2D_MSG_LEN_MAX-1);
-    }
-    ROS_DEBUG("Rx buffer cleared");
-  }
-  else
-  {
-    ROS_DEBUG("No messages to clear in Rx buffer!");
-  }
+  thread_ = boost::thread(&Scanner2d::processThread, this);
 
   reset();
 
@@ -251,19 +254,17 @@ void Scanner2d::reset()
 
   retry_count = 0;
 
-  retry_clear:
+retry_clear:
   bytes_written = ::write(port_fd_, command_buffer_, msg_length);
   if (bytes_written != msg_length)
   {
     ROS_ERROR("reset CLEAR command write failed!");
   }
 
-  ROS_DEBUG("Waiting for reset CLEAR to complete...");
+  ROS_DEBUG("Waiting for reset CLEAR to complete... status_.flags: %d", status_.flags);
   count = 0;
   while (status_.flags & 0x01)
   {
-    process();
-
     count++;
     if (count >= 100)
     {
@@ -350,6 +351,111 @@ void Scanner2d::setScanPeriod(const uint16_t period)
 }
 
 /*----------------------------------------------------------
+ * setSamplesPerScan() - set the samples per scan
+ *--------------------------------------------------------*/
+
+void Scanner2d::setSamplesPerScan(const uint16_t samples_per_scan)
+{
+  ssize_t msg_length = 7;
+  ssize_t bytes_written;
+
+  ROS_DEBUG("Sending setSamplesPerScan: %d command", samples_per_scan);
+
+  command_buffer_[0] = 0xFF;
+  command_buffer_[1] = 0xFF;
+  command_buffer_[2] = SCANNER2D_CMD_SET_SAMPLES_PER_SCAN;
+  command_buffer_[3] = 2; // payload length
+  command_buffer_[4] = (samples_per_scan & 0xFF);
+  command_buffer_[5] = (samples_per_scan & 0xFF00) >> 8;
+  command_buffer_[6] = calcChecksum(command_buffer_, msg_length-1);
+
+  bytes_written = ::write(port_fd_, command_buffer_, msg_length);
+  if (bytes_written != msg_length)
+  {
+    ROS_ERROR("setSamplesPerScan command failed!");
+  }
+}
+
+/*----------------------------------------------------------
+ * setSampleRejectionMode() - set the sample rejection
+ *--------------------------------------------------------*/
+
+void Scanner2d::setSampleRejectionMode(const bool enabled)
+{
+  ssize_t msg_length = 6;
+  ssize_t bytes_written;
+
+  ROS_DEBUG("Sending setSampleRejectionMode: %d command", enabled);
+
+  command_buffer_[0] = 0xFF;
+  command_buffer_[1] = 0xFF;
+  command_buffer_[2] = SCANNER2D_CMD_SET_SAMPLE_REJECTION;
+  command_buffer_[3] = 1; // payload length
+  command_buffer_[4] = (enabled & 0x01);
+  command_buffer_[5] = calcChecksum(command_buffer_, msg_length-1);
+
+  bytes_written = ::write(port_fd_, command_buffer_, msg_length);
+  if (bytes_written != msg_length)
+  {
+    ROS_ERROR("setSamplesPerScan command failed!");
+  }
+}
+
+/*----------------------------------------------------------
+ * setParkTrim() - adjust the park position
+ *--------------------------------------------------------*/
+
+void Scanner2d::setParkTrim(const int16_t trim)
+{
+  ssize_t msg_length = 7;
+  ssize_t bytes_written;
+
+  ROS_DEBUG("Sending setParkTrim: %d command", trim);
+
+  command_buffer_[0] = 0xFF;
+  command_buffer_[1] = 0xFF;
+  command_buffer_[2] = SCANNER2D_CMD_SET_PARK_TRIM;
+  command_buffer_[3] = 2; // payload length
+  command_buffer_[4] = (trim & 0xFF);
+  command_buffer_[5] = (trim & 0xFF00) >> 8;
+  command_buffer_[6] = calcChecksum(command_buffer_, msg_length-1);
+
+  bytes_written = ::write(port_fd_, command_buffer_, msg_length);
+  if (bytes_written != msg_length)
+  {
+    ROS_ERROR("setParkTrim command failed!");
+  }
+}
+
+/*----------------------------------------------------------
+ * setMinMaxAngle() - set the active scan region
+ *--------------------------------------------------------*/
+
+void Scanner2d::setMinMaxAngle(const uint16_t min, const uint16_t max)
+{
+  ssize_t msg_length = 9;
+  ssize_t bytes_written;
+
+  ROS_DEBUG("Sending setMinMaxAngle: %d, %d command", min, max);
+
+  command_buffer_[0] = 0xFF;
+  command_buffer_[1] = 0xFF;
+  command_buffer_[2] = SCANNER2D_CMD_SET_MIN_MAX_ANGLE;
+  command_buffer_[3] = 4; // payload length
+  command_buffer_[4] = (min & 0xFF);
+  command_buffer_[5] = (min & 0xFF00) >> 8;
+  command_buffer_[6] = (max & 0xFF);
+  command_buffer_[7] = (max & 0xFF00) >> 8;
+  command_buffer_[8] = calcChecksum(command_buffer_, msg_length-1);
+
+  bytes_written = ::write(port_fd_, command_buffer_, msg_length);
+  if (bytes_written != msg_length)
+  {
+    ROS_ERROR("setMinMaxAngle command failed!");
+  }
+}
+
+/*----------------------------------------------------------
  * getStatus() - returns the current status of the scanner 
  *--------------------------------------------------------*/
 
@@ -372,6 +478,9 @@ void Scanner2d::processThread()
     if (processConsole(this) == 'q')
     {
       ROS_DEBUG("Got 'q' back from processConsole()!");
+      
+      stop();
+      ros::Duration(0.5).sleep();
       close();
 
       status_.flags |= 0x80; // signal the node we want to quit
@@ -521,6 +630,9 @@ void Scanner2d::updateStatus(const uint8_t *buffer)
   status_.samples_per_scan = buffer[0] | (buffer[1] << 8);
   status_.scan_period = buffer[2] | (buffer[3] << 8);
   status_.flags = buffer[4];
+  if (msg_->payload_length > 5) {
+    status_.range_reading = buffer[5] | (buffer[6] << 8);
+  }
 
   printStatus();
 }
@@ -535,6 +647,7 @@ void Scanner2d::printStatus(void)
   ROS_DEBUG("  samples_per_scan: %d", status_.samples_per_scan);
   ROS_DEBUG("  scan_period: %d", status_.scan_period);
   ROS_DEBUG("  statusFlags: %d", status_.flags);
+  ROS_DEBUG("  range_reading: %d", status_.range_reading);
 }
 
 /*----------------------------------------------------------
@@ -553,14 +666,14 @@ void Scanner2d::publishScan(const uint8_t *buffer, const uint16_t len)
 
   scan.scan_time = status_.scan_period / 1000.0;
   scan.range_min = 0.1;
-  scan.range_max = 3.6576;
+  scan.range_max = 5.0;
 
   scan.header.stamp = current_time - ros::Duration(scan.scan_time);
   scan.angle_max = 3.142;
   scan.angle_min = -scan.angle_max;
 
   scan.time_increment = scan.scan_time / samples_per_scan;
-  scan.angle_increment = 2 * 3.142 / samples_per_scan;
+  scan.angle_increment = 2 * 3.141592 / samples_per_scan;
   scan.ranges.resize(samples_per_scan);
   for (i=0; i<len; i+=2)
   {
@@ -606,6 +719,7 @@ char processConsole(Scanner2d *pScanner)
 {
   char kbd_ch = 0;
   int i;
+  static int parkTrim = 0;
 
   if (consoleKbHit())
   {
@@ -618,12 +732,45 @@ char processConsole(Scanner2d *pScanner)
     case '2':
       pScanner->setScanPeriod(500);
       break;
+    case '3':
+      pScanner->setScanPeriod(333);
+      break;
     case '4':
       pScanner->setScanPeriod(250);
       break;    
     case '5':
       pScanner->setScanPeriod(200);
-      break;    
+      break;
+    case '!':
+      pScanner->setSamplesPerScan(100);
+      break;
+    case '@':
+      pScanner->setSamplesPerScan(200);
+      break;
+    case '#':
+      pScanner->setSamplesPerScan(300);
+      break;
+    case '$':
+      pScanner->setSamplesPerScan(400);
+      break;
+    case '%':
+      pScanner->setSamplesPerScan(500);
+      break;
+    case '^':
+      pScanner->setSamplesPerScan(600);
+      break;
+    case '&':
+      pScanner->setSamplesPerScan(700);
+      break;
+    case '*':
+      pScanner->setSamplesPerScan(800);
+      break;
+    case '(':
+      pScanner->setSamplesPerScan(900);
+      break;
+    case ')':
+      pScanner->setSamplesPerScan(1000);
+      break;
     case 'P':
       if (started)
       {
@@ -636,11 +783,31 @@ char processConsole(Scanner2d *pScanner)
         started = true;
       }
       break;
+    case 'r':
+      {
+        Scanner2dStatus_t status;
+
+        pScanner->getStatus(&status);
+        pScanner->setSampleRejectionMode(((status.flags & 0x02)==0));
+     }
+      break;
     case 'R':
       pScanner->reset();
       break;
     case 'S':
       pScanner->printStatus();
+      break;
+    case 't':
+      if (parkTrim >= -99) {
+        parkTrim -= 1;
+      }
+      pScanner->setParkTrim(parkTrim);
+      break;
+    case 'T':
+      if (parkTrim <= 99) {
+        parkTrim += 1;
+      }
+      pScanner->setParkTrim(parkTrim);
       break;
     default:
       break;

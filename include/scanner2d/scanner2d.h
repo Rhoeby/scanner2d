@@ -49,6 +49,7 @@ typedef struct Scanner2dStatus_t
   uint16_t samples_per_scan;
   uint16_t scan_period;
   uint8_t flags;
+  uint16_t range_reading;
 } Scanner2dStatus_t;
 
 struct Scanner2dMsg_t;
@@ -66,6 +67,10 @@ public:
 
   void getStatus(Scanner2dStatus_t *status);
   void setScanPeriod(const uint16_t period);
+  void setSamplesPerScan(const uint16_t samples_per_scan);
+  void setSampleRejectionMode(const bool enabled);
+  void setParkTrim(const int16_t trim);
+  void setMinMaxAngle(const uint16_t min, const uint16_t max);
 
 private:
   void processThread();
@@ -80,7 +85,7 @@ private:
   void updateStatus(const uint8_t *buffer);
   void printStatus(void);
 
-  void reset();
+  void reset(); // can block for a long time!
   friend char processConsole(Scanner2d *pScanner);
 
   int32_t port_fd_;
