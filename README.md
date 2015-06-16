@@ -6,11 +6,11 @@ The Rhoeby Dynamics R2D LiDAR is a small, light, low-cost scanner that uses IR (
 Specifications
 --------------
 
-  - Scan rate (typical): 1 - 5 Hz, user-configurable
+  - Scan rate: 1 - 5 Hz, user-configurable
   - Scan range: 360 degrees, over 5 meters
-  - Angular resolution (minimum): 1.8 degrees
-  - Sample density (typical): 200 Samples/scan, user-configurable
-  - Size: 100 x 50 x 50 mm (with base enclosure)
+  - Angular resolution (minimum): 0.36 degrees (@ 1 Hz scan rate)
+  - Sample density: 250 - 1000 Samples/scan, user-configurable
+  - Size: 75 x 44 x 44 mm (with base enclosure)
   - IR-based sensor
 
 Quick instructions
@@ -43,8 +43,8 @@ Detailed instructions
 2. connect scanner via USB
 
   - plug in scanner
-  - type 'lsusb', you should see something like: "Bus 002 Device 009: ID 0483:5740 SGS Thomson Microelectronics"
-  - confirm sensor is spinning (once per second) and blue LED is flashing
+  - type 'lsusb', you should see something like: "Bus 002 Device 074: ID 0483:5740 STMicroelectronics"
+  - confirm sensor blue LED is flashing
   - you could verify *binary* data flow from the scanner, type: 'cat /dev/ttyACM0' (use Ctrl-C to exit)
 
 3. run roscore
@@ -59,11 +59,11 @@ Detailed instructions
 
 5. run ROS node as shown here (it's using ttyS3, as an example):
 
-    rosrun scanner2d scanner2d _port_name:="/dev/ttyS3"
+    rosrun scanner2d scanner2d _port_name:="/dev/ttyS3" _scan_rate:=4
 
  The default port name is "/dev/ttyACM0". If you are using a different port, you'll need to specify it on the command line.
 
-6. Confirm scanner speeds up to 240 rpm (4 rotations / sec)
+6. Confirm scanner starts and speeds up to 240 rpm (4 rotations / sec)
 
 7. run RViz
 
@@ -82,9 +82,13 @@ Detailed instructions
 Notes
 -----
 
-When the ROS node is started, the scanner gets reset. As part of the reset, the scanner slows to a 1 Hz scan rate, then speeds up to the default 4 Hz scan rate (or whatever is set on the command line). This is required to get the scanner initialized and into a known state prior to starting normal operation.
+When the ROS node is started, the scanner gets reset. As part of the reset, the scanner starts at a slow speed, then it speeds up to the operational scan rate (whatever is set on the command line). This is required to get the scanner initialized and into a known state prior to starting normal operation.
 
-It's possible to run the scanner at different speeds. From the command-line, you could set the paramter 'scan_rate'.
+It's possible to run the scanner at different speeds. From the command-line, you could set the paramter 'scan_rate'. Actually, there are several parameters that can be set. Here is a sample command line:
+
+    rosrun scanner2d scanner2d _port_name:="/dev/ttyACM0" _scan_rate:=3 _sample_rejection:=0 _samples_per_scan:=333 _min_angle:=0 _max_angle:=360
+
+These settings are added to the ROS parameter server when the driver is started.
 
 Troubleshooting
 ---------------
@@ -123,7 +127,7 @@ Solution:
 Do the following:
 
   - shutdown rviz (using Ctrl-C)
-  - shutdown the scanner2d node
+  - shutdown the scanner2d node (using Ctrl-C)
   - shutdown the static_transform_publisher
   - shutdown roscore
 
