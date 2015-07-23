@@ -1,19 +1,21 @@
 <launch>
-  <!-- Load scanner parameters -->
-  <param name="port_name" value="/dev/ttyACM0" />
-
-  <!-- The product of scan_rate and samples_per_scan must be <= 1000 -->
-  <param name="scan_rate" value="3" type="int" /> <!-- [Hz] rotations per second -->
-  <param name="samples_per_scan" value="333" type="int" />
-
-  <param name="sample_rejection" value="0" type="int" />
-  <param name="min_angle" value="0" type="int" />
-  <param name="max_angle" value="360" type="int" />
-
 
   <!-- Launch the node with a topic remapping -->
   <node name="scanner2d" pkg="scanner2d" type="scanner2d" output="screen" >
     <remap from="/laser_data" to="scan" />
+
+    <!-- Load scanner parameters -->
+    <param name="port_name" value="/dev/ttyACM0" />
+    <!-- <param name="port_name" value="/dev/rhoeby_R2D" /> -->
+
+    <!-- The product of scan_rate and samples_per_scan must be <= 1000 -->
+    <param name="scan_rate" value="3" type="int" /> <!-- [Hz] rotations per second -->
+    <param name="samples_per_scan" value="333" type="int" />
+
+    <param name="sample_rejection" value="0" type="int" />
+    <param name="min_angle" value="0" type="int" />
+    <param name="max_angle" value="360" type="int" />
+
   </node>
 	
   <!-- Add TF if running stand-alone -->
