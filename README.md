@@ -1,10 +1,8 @@
-Rhoeby Dynamics R2D LiDAR ROS Node
-==================================
+#Rhoeby Dynamics R2D LiDAR ROS Node
 
 The Rhoeby Dynamics R2D LiDAR is a small, light, low-cost scanner that uses IR (Infra-Red) ranging technology from TeraRanger (website: http://teraranger.com). This scanner is designed to replace more expensive laser-based products and avoids the eye-safety issues associated with those devices. For more information on the scanner, please see our website: http://www.rhoeby.com.
 
-Specifications
---------------
+##Specifications
 
   - Scan rate: 1 - 5 Hz, user-configurable
   - Scan range: 360 degrees, over 5 meters
@@ -13,8 +11,7 @@ Specifications
   - Size: 75 x 44 x 44 mm (with base enclosure)
   - IR-based sensor
 
-Quick instructions
-------------------
+##Quick instructions
 
 1. install/build scanner2d ROS node
 
@@ -31,8 +28,7 @@ Quick instructions
 5. view data in rviz (topic: '/laser_data', frame_id: 'base_laser')
 
 
-Detailed instructions
----------------------
+##Detailed instructions
 
 1. install/build scanner2d ROS node
 
@@ -79,8 +75,7 @@ Detailed instructions
 
  The LaserScan should now be presented in rviz. If you can see it, congratulations! If it does not work, try the Troubleshooting guide below.
 
-Notes
------
+##Notes
 
 When the ROS node is started, the scanner gets reset. As part of the reset, the scanner starts at a slow speed, then it speeds up to the operational scan rate (whatever is set on the command line). This is required to get the scanner initialized and into a known state prior to starting normal operation.
 
@@ -90,14 +85,13 @@ It's possible to run the scanner at different speeds. From the command-line, you
 
 These settings are added to the ROS parameter server when the driver is started.
 
-Troubleshooting
----------------
+##Troubleshooting
 
-Symptom: 
+###Symptom: 
 
 Scanner fails to respond when ROS node is started (shows message "Waiting for reset CLEAR to complete...")
 
-Solution:
+###Solution:
 
 Run the following
 
@@ -109,20 +103,20 @@ If yes, restart the scanner ROS node, and try again.
 
 If no, the problem is likely to be connectivity between the scanner and your Linux system... check you have it connected correctly and have specified the correct device (eg. /dev/ttyS2). Try unplug/plug.
 
-Symptom:
+###Symptom:
 
 When starting the scanner2d node, it reports: "[ERROR] [1427572321.434331608]: /dev/ttyACM0 open failed!
 " or similar
 
-Solution:
+###Solution:
 
 Make sure you have permission to access '/dev/ttyACM0' (or other)
 
-Symptom: 
+###Symptom: 
 
 RViz does not display the scan
 
-Solution:
+###Solution:
 
 With the scanner running do the following:
 
@@ -152,11 +146,11 @@ If there is no data, it's likely a problem with the scanner. Do the following:
 
 If that fails, try running 'rosrun rqt_console rqt_console' and set scanner2d to Debug (with scanner and driver running). Do you see status messages?
 
-Symptom: 
+###Symptom: 
 
 Scanner does not enumerate (does not show up as COM port) under Windows
 
-Solution:
+###Solution:
 
     Unplug scanner from USB
     Select "scan for hardware changes"
