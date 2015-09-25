@@ -99,9 +99,9 @@ Scanner fails to respond when ROS node is started (shows message "Waiting for re
 
 Solution:
 
-1. run the following
+Run the following
 
-  cat /dev/ttyACM0 (or whatever device your scanner is on)
+    cat /dev/ttyACM0 (or whatever device your scanner is on)
 
 Is binary data presented?
 
@@ -124,20 +124,33 @@ RViz does not display the scan
 
 Solution:
 
-Do the following:
+With the scanner running do the following:
 
-  - shutdown rviz (using Ctrl-C)
-  - shutdown the scanner2d node (using Ctrl-C)
-  - shutdown the static_transform_publisher
-  - shutdown roscore
+    open another terminal
+    run 'rostopic echo /laser_data'
 
-  - unplug scanner
-  - plug scanner back in
+Do you see any data?
 
-  - restart roscore
-  - restart static_transform_publisher
-  - restart scanner2d node
-  - restart rviz
+If yes, then the problem is with RViz and I would suggest to check for any error in RViz. If you "Add by Topic", does the 'laser_data' topic show up?
+
+If there is no data, it's likely a problem with the scanner. Do the following:
+
+    shutdown rviz (using Ctrl-C)
+    shutdown the scanner2d node (using Ctrl-C)
+    shutdown the static_transform_publisher
+
+    shutdown roscore
+
+    unplug scanner
+
+    plug scanner back in
+
+    restart roscore
+    restart static_transform_publisher
+    restart scanner2d node
+    restart rviz
+
+If that fails, try running 'rosrun rqt_console rqt_console' and set scanner2d to Debug (with scanner and driver running). Do you see status messages?
 
 Symptom: 
 
@@ -145,6 +158,6 @@ Scanner does not enumerate (does not show up as COM port) under Windows
 
 Solution:
 
-Unplug scanner from USB
-Select "scan for hardware changes"
-Plug in scanner
+    Unplug scanner from USB
+    Select "scan for hardware changes"
+    Plug in scanner
