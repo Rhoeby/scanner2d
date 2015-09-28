@@ -10,6 +10,7 @@ The Rhoeby Dynamics R2D LiDAR is a small, light, low-cost scanner that uses IR (
   - Sample density: 250 - 1000 Samples/scan, user-configurable
   - Size: 75 x 44 x 44 mm (with base enclosure)
   - IR-based sensor
+  - Interfaces: Micro-USB, UART
 
 ##Quick instructions
 
