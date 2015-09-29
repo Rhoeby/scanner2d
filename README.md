@@ -8,6 +8,7 @@ The Rhoeby Dynamics R2D LiDAR is a small, light, low-cost scanner that uses IR (
   - Scan range: 360 degrees, over 5 meters
   - Angular resolution (minimum): 0.36 degrees (@ 1 Hz scan rate)
   - Sample density: 250 - 1000 Samples/scan, user-configurable
+  - Range accuracy: +/- 5-10 cm
   - Size: 75 x 44 x 44 mm (with base enclosure)
   - IR-based sensor
   - Interfaces: Micro-USB, UART
