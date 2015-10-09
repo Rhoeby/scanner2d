@@ -81,7 +81,17 @@ The Rhoeby Dynamics R2D LiDAR is a small, light, low-cost scanner that uses IR (
 
 When the ROS node is started, the scanner gets reset. As part of the reset, the scanner starts at a slow speed, then it speeds up to the operational scan rate (whatever is set on the command line). This is required to get the scanner initialized and into a known state prior to starting normal operation.
 
-It's possible to run the scanner at different speeds. From the command-line, you could set the paramter 'scan_rate'. Actually, there are several parameters that can be set. Here is a sample command line:
+The Rhoeby R2D LiDAR provides completely **unfiltered scan results**, when used with it's default setting. As a result, users may find that there is significant noise in the scan data, as well as "veiling" effects around edges, and other such artifacts. These effects can be eliminated to a great extent by enabling "sample rejection". This can be done when invoking the ROS driver, as follows:
+
+    rosrun scanner2d scanner2d _sample_rejection:=1
+
+Doing the above will result in similar readings to that given by other devices. When doing lab tests, and especially if doing side-by-side comparisons with laser-based devices, it is recommended that users enable sample rejection, as described above.
+
+It's possible to run the scanner at different speeds. From the command-line, you could set the paramter 'scan_rate'. 
+
+    rosrun scanner2d scanner2d _scan_rate:=3
+
+Actually, there are several parameters that can be set. Here is a sample command line:
 
     rosrun scanner2d scanner2d _port_name:="/dev/ttyACM0" _scan_rate:=3 _sample_rejection:=0 _samples_per_scan:=333 _min_angle:=0 _max_angle:=360
 
@@ -157,3 +167,15 @@ Scanner does not enumerate (does not show up as COM port) under Windows
     Unplug scanner from USB
     Select "scan for hardware changes"
     Plug in scanner
+
+###Symptom: 
+
+My scanner is showing a lot of noise in the scan data
+
+###Solution:
+
+The Rhoeby R2D LiDAR provides completely **unfiltered scan results**, when used with it's default setting. As a result, users may find that there is significant noise in the scan data, as well as "veiling" effects around edges, and other such artifacts. These effects can be eliminated to a great extent by enabling "sample rejection". This can be done when invoking the ROS driver, as follows:
+
+    rosrun scanner2d scanner2d _sample_rejection:=1
+
+Doing the above will result in similar readings to that given by other devices. When doing lab tests, and especially if doing side-by-side comparisons with laser-based devices, it is recommended that users enable sample rejection, as described above.
