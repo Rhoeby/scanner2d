@@ -37,6 +37,7 @@ The Rhoeby Dynamics R2D LiDAR is a small, light, low-cost scanner that uses IR (
   - download code from https://github.com/Rhoeby/scanner2d
   - place code in sub-directory of catkin workspace
   - do 'catkin_make'
+  - do 'source devel/setup.bash'
 
 2. connect scanner via USB
 
