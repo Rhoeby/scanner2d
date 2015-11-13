@@ -2,6 +2,18 @@
 
 The Rhoeby Dynamics R2D LiDAR is a small, light, low-cost scanner that uses IR (Infra-Red) ranging technology from TeraRanger (website: http://teraranger.com). This scanner is designed to replace more expensive laser-based products and avoids the eye-safety issues associated with those devices. For more information on the scanner, please see our website: http://www.rhoeby.com.
 
+##Table of Contents
+
+[Specifications](https://github.com/Rhoeby/scanner2d#specifications)
+
+[Quick instructions](https://github.com/Rhoeby/scanner2d#quick-instructions)
+
+[Detailed instructions](https://github.com/Rhoeby/scanner2d#detailed-instructions)
+
+[Notes](https://github.com/Rhoeby/scanner2d#notes)
+
+[Troubleshooting](https://github.com/Rhoeby/scanner2d#troubleshooting)
+
 ##Specifications
 
   - Scan rate: 1 - 5 Hz, user-configurable
