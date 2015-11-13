@@ -112,9 +112,9 @@ These settings are added to the ROS parameter server when the driver is started.
 
 ##Troubleshooting
 
-###Symptom: 
+[Scanner fails to respond when ROS node is started](https://github.com/Rhoeby/scanner2d#solution)
 
-Scanner fails to respond when ROS node is started (shows message "Waiting for reset CLEAR to complete...")
+###Scanner fails to respond when ROS node is started (shows message "Waiting for reset CLEAR to complete...")
 
 ###Solution:
 
