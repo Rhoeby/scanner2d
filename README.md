@@ -114,6 +114,17 @@ These settings are added to the ROS parameter server when the driver is started.
 
 [Scanner fails to respond when ROS node is started](https://github.com/Rhoeby/scanner2d#solution)
 
+[When starting the scanner2d node, it reports: "[ERROR] [1427572321.434331608]: /dev/ttyACM0 open failed!
+" or similar](https://github.com/Rhoeby/scanner2d#solution-1)
+
+[RViz does not display the scan](https://github.com/Rhoeby/scanner2d#solution-2)
+
+[My scanner is showing a lot of noise in the scan data](https://github.com/Rhoeby/scanner2d#solution-3)
+
+[Scanner does not enumerate (does not show up as COM port) under Windows](https://github.com/Rhoeby/scanner2d#solution-4)
+
+[When I connect the Mini-USB port to my Windows PC, the driver is not recognized (Vista/7/8/10)](https://github.com/Rhoeby/scanner2d#solution-5)
+
 ###Scanner fails to respond when ROS node is started (shows message "Waiting for reset CLEAR to complete...")
 
 ###Solution:
@@ -128,18 +139,14 @@ If yes, restart the scanner ROS node, and try again.
 
 If no, the problem is likely to be connectivity between the scanner and your Linux system... check you have it connected correctly and have specified the correct device (eg. /dev/ttyS2). Try unplug/plug.
 
-###Symptom:
-
-When starting the scanner2d node, it reports: "[ERROR] [1427572321.434331608]: /dev/ttyACM0 open failed!
+###When starting the scanner2d node, it reports: "[ERROR] [1427572321.434331608]: /dev/ttyACM0 open failed!
 " or similar
 
 ###Solution:
 
 Make sure you have permission to access '/dev/ttyACM0' (or other)
 
-###Symptom: 
-
-RViz does not display the scan
+###RViz does not display the scan
 
 ###Solution:
 
@@ -171,19 +178,7 @@ If there is no data, it's likely a problem with the scanner. Do the following:
 
 If that fails, try running 'rosrun rqt_console rqt_console' and set scanner2d to Debug (with scanner and driver running). Do you see status messages?
 
-###Symptom: 
-
-Scanner does not enumerate (does not show up as COM port) under Windows
-
-###Solution:
-
-    Unplug scanner from USB
-    Select "scan for hardware changes"
-    Plug in scanner
-
-###Symptom: 
-
-My scanner is showing a lot of noise in the scan data
+###My scanner is showing a lot of noise in the scan data
 
 ###Solution:
 
@@ -192,3 +187,33 @@ The Rhoeby R2D LiDAR provides completely **unfiltered scan results**, when used 
     rosrun scanner2d scanner2d _sample_rejection:=1
 
 Doing the above will result in similar readings to that given by other devices. When doing lab tests, and especially if doing side-by-side comparisons with laser-based devices, it is recommended that users enable sample rejection, as described above.
+
+###Scanner does not enumerate (does not show up as COM port) under Windows
+
+###Solution:
+
+    Unplug scanner from USB
+    Select "scan for hardware changes" (in Windows Device Manager)
+    Plug in scanner
+
+###When I connect the Mini-USB port to my Windows PC, the driver is not recognized (Vista/7/8/10)
+
+###Solution:
+
+Please try: 
+
+  - a different cable (some customers have had bad cables)
+  - a different USB port
+  - reboot your PC
+
+For Windows 7/8, you could try installing this device driver:
+
+  http://www.st.com/web/en/catalog/tools/PF257938
+
+(you may need to reboot after install)
+
+If that fails to get the LiDAR recognized, please try: 
+
+  - a different PC (preferably with different OS version)
+
+(Note: we have tested the device with Windows 7, 8 and 10. Also, tested with various Linux versions)
