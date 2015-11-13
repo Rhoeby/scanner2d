@@ -139,8 +139,7 @@ If yes, restart the scanner ROS node, and try again.
 
 If no, the problem is likely to be connectivity between the scanner and your Linux system... check you have it connected correctly and have specified the correct device (eg. /dev/ttyS2). Try unplug/plug.
 
-###When starting the scanner2d node, it reports: "[ERROR] [1427572321.434331608]: /dev/ttyACM0 open failed!
-" or similar
+###When starting the scanner2d node, it reports: "[ERROR] [1427572321.434331608]: /dev/ttyACM0 open failed!" or similar
 
 ###Solution:
 
