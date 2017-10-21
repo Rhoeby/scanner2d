@@ -1,8 +1,8 @@
-#Rhoeby Dynamics R2D LiDAR ROS Node
+# Rhoeby Dynamics R2D LiDAR ROS Node
 
 The Rhoeby Dynamics R2D LiDAR is a small, light, low-cost scanner that uses IR (Infra-Red) ranging technology from TeraRanger (website: http://teraranger.com). This scanner is designed to replace more expensive laser-based products and avoids the eye-safety issues associated with those devices. For more information on the scanner, please see our website: http://www.rhoeby.com.
 
-##Table of Contents
+## Table of Contents
 
 [Specifications](https://github.com/Rhoeby/scanner2d#specifications)
 
@@ -14,7 +14,7 @@ The Rhoeby Dynamics R2D LiDAR is a small, light, low-cost scanner that uses IR (
 
 [Troubleshooting](https://github.com/Rhoeby/scanner2d#troubleshooting)
 
-##Specifications
+## Specifications
 
   - Scan rate: 1 - 5 Hz, user-configurable
   - Scan range: 360 degrees, over 5 meters
@@ -25,7 +25,7 @@ The Rhoeby Dynamics R2D LiDAR is a small, light, low-cost scanner that uses IR (
   - IR-based sensor
   - Interfaces: Micro-USB, UART
 
-##Quick instructions
+## Quick instructions
 
 1. install/build scanner2d ROS node
 
@@ -42,7 +42,7 @@ The Rhoeby Dynamics R2D LiDAR is a small, light, low-cost scanner that uses IR (
 5. view data in rviz (topic: '/laser_data', frame_id: 'base_laser')
 
 
-##Detailed instructions
+## Detailed instructions
 
 1. install/build scanner2d ROS node
 
@@ -90,7 +90,7 @@ The Rhoeby Dynamics R2D LiDAR is a small, light, low-cost scanner that uses IR (
 
  The LaserScan should now be presented in rviz. If you can see it, congratulations! If it does not work, try the Troubleshooting guide below.
 
-##Notes
+## Notes
 
 When the ROS node is started, the scanner gets reset. As part of the reset, the scanner starts at a slow speed, then it speeds up to the operational scan rate (whatever is set on the command line). This is required to get the scanner initialized and into a known state prior to starting normal operation.
 
@@ -110,7 +110,7 @@ Actually, there are several parameters that can be set. Here is a sample command
 
 These settings are added to the ROS parameter server when the driver is started.
 
-##Troubleshooting
+## Troubleshooting
 
 [Scanner fails to respond when ROS node is started](https://github.com/Rhoeby/scanner2d#solution)
 
@@ -125,9 +125,9 @@ These settings are added to the ROS parameter server when the driver is started.
 
 [When I connect the Mini-USB port to my Windows PC, the driver is not recognized (Vista/7/8/10)](https://github.com/Rhoeby/scanner2d#solution-5)
 
-###Scanner fails to respond when ROS node is started (shows message "Waiting for reset CLEAR to complete...")
+### Scanner fails to respond when ROS node is started (shows message "Waiting for reset CLEAR to complete...")
 
-###Solution:
+### Solution:
 
 Run the following
 
@@ -139,15 +139,15 @@ If yes, restart the scanner ROS node, and try again.
 
 If no, the problem is likely to be connectivity between the scanner and your Linux system... check you have it connected correctly and have specified the correct device (eg. /dev/ttyS2). Try unplug/plug.
 
-###When starting the scanner2d node, it reports: "[ERROR] [1427572321.434331608]: /dev/ttyACM0 open failed!" or similar
+### When starting the scanner2d node, it reports: "[ERROR] [1427572321.434331608]: /dev/ttyACM0 open failed!" or similar
 
-###Solution:
+### Solution:
 
 Make sure you have permission to access '/dev/ttyACM0' (or other)
 
-###RViz does not display the scan
+### RViz does not display the scan
 
-###Solution:
+### Solution:
 
 With the scanner running do the following:
 
@@ -177,9 +177,9 @@ If there is no data, it's likely a problem with the scanner. Do the following:
 
 If that fails, try running 'rosrun rqt_console rqt_console' and set scanner2d to Debug (with scanner and driver running). Do you see status messages?
 
-###My scanner is showing a lot of noise in the scan data
+### My scanner is showing a lot of noise in the scan data
 
-###Solution:
+### Solution:
 
 The Rhoeby R2D LiDAR provides completely **unfiltered scan results**, when used with it's default setting. As a result, users may find that there is significant noise in the scan data, as well as "veiling" effects around edges, and other such artifacts. These effects can be eliminated to a great extent by enabling "sample rejection". This can be done when invoking the ROS driver, as follows:
 
@@ -187,17 +187,17 @@ The Rhoeby R2D LiDAR provides completely **unfiltered scan results**, when used 
 
 Doing the above will result in similar readings to that given by other devices. When doing lab tests, and especially if doing side-by-side comparisons with laser-based devices, it is recommended that users enable sample rejection, as described above.
 
-###Scanner does not enumerate (does not show up as COM port) under Windows
+### Scanner does not enumerate (does not show up as COM port) under Windows
 
-###Solution:
+### Solution:
 
     Unplug scanner from USB
     Select "scan for hardware changes" (in Windows Device Manager)
     Plug in scanner
 
-###When I connect the Mini-USB port to my Windows PC, the driver is not recognized (Vista/7/8/10)
+### When I connect the Mini-USB port to my Windows PC, the driver is not recognized (Vista/7/8/10)
 
-###Solution:
+### Solution:
 
 Please try: 
 
