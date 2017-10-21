@@ -46,17 +46,17 @@ The Rhoeby Dynamics R2D LiDAR is a small, light, low-cost scanner that uses IR (
 
 1. install/build scanner2d ROS node
 
-  - download code from https://github.com/Rhoeby/scanner2d
-  - place code in sub-directory of catkin workspace
-  - do 'catkin_make'
-  - do 'source devel/setup.bash'
+    - download code from https://github.com/Rhoeby/scanner2d
+    - place code in sub-directory of catkin workspace
+    - do 'catkin_make'
+    - do 'source devel/setup.bash'
 
 2. connect scanner via USB
 
-  - plug in scanner
-  - type 'lsusb', you should see something like: "Bus 002 Device 074: ID 0483:5740 STMicroelectronics"
-  - confirm sensor blue LED is flashing
-  - you could verify *binary* data flow from the scanner, type: 'cat /dev/ttyACM0' (use Ctrl-C to exit)
+    - plug in scanner
+    - type 'lsusb', you should see something like: "Bus 002 Device 074: ID 0483:5740 STMicroelectronics"
+    - confirm sensor blue LED is flashing
+    - you could verify *binary* data flow from the scanner, type: 'cat /dev/ttyACM0' (use Ctrl-C to exit)
 
 3. run roscore
 
@@ -82,11 +82,11 @@ The Rhoeby Dynamics R2D LiDAR is a small, light, low-cost scanner that uses IR (
 
 9. observe scanner plot data in rviz
 
-  - in rviz, select "Add"
-  - select "By topic" tab
-  - you should see '/laser_data' as a topic
-  - select LaserScan which appears under the topic
-  - hit OK
+    - in rviz, select "Add"
+    - select "By topic" tab
+    - you should see '/laser_data' as a topic
+    - select LaserScan which appears under the topic
+    - hit OK
 
  The LaserScan should now be presented in rviz. If you can see it, congratulations! If it does not work, try the Troubleshooting guide below.
 
@@ -201,18 +201,18 @@ Doing the above will result in similar readings to that given by other devices. 
 
 Please try: 
 
-  - a different cable (some customers have had bad cables)
-  - a different USB port
-  - reboot your PC
+    - a different cable (some customers have had bad cables)
+    - a different USB port
+    - reboot your PC
 
 For Windows 7/8, you could try installing this device driver:
 
-  http://www.st.com/web/en/catalog/tools/PF257938
+    http://www.st.com/web/en/catalog/tools/PF257938
 
 (you may need to reboot after install)
 
 If that fails to get the LiDAR recognized, please try: 
 
-  - a different PC (preferably with different OS version)
+    - a different PC (preferably with different OS version)
 
 (Note: we have tested the device with Windows 7, 8 and 10. Also, tested with various Linux versions)
