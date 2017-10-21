@@ -33,11 +33,11 @@ The Rhoeby Dynamics R2D LiDAR is a small, light, low-cost scanner that uses IR (
 
 3. run static tf publisher
 
-  rosrun tf static_transform_publisher 0.0 0.0 0.0 0.0 0.0 0.0 base_laser map 1000 &
+    rosrun tf static_transform_publisher 0.0 0.0 0.0 0.0 0.0 0.0 base_laser map 1000 &
 
 4. run scanner2d node
 
-  rosrun scanner2d scanner2d _port_name:="/dev/ttyACM0"
+    rosrun scanner2d scanner2d _port_name:="/dev/ttyACM0"
 
 5. view data in rviz (topic: '/laser_data', frame_id: 'base_laser')
 
@@ -60,7 +60,7 @@ The Rhoeby Dynamics R2D LiDAR is a small, light, low-cost scanner that uses IR (
 
 3. run roscore
 
-  roscore &
+    roscore &
 
 4. run static tf publisher
 
