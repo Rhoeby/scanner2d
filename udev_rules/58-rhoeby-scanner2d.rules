@@ -1,0 +1,2 @@
+# Rhoeby Dynamics R2D LiDAR
+KERNEL=="ttyACM?", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="5740", MODE="0666", SYMLINK+="rhoeby_R2D"
